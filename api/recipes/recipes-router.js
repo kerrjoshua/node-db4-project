@@ -1,11 +1,21 @@
 const express = require('express')
 const router = express.Router()
+const Recipes = require('./recipes-model')
+
+router.get('/:recipe_id', (req, res, next) => {
+    Recipes.getById(req.params.recipe_id)
+        .then(resource => {
+            throw new Error('Oh Nooooo!');
+            res.json(resource)
+        })
+        .catch(next)
+})
 
 router.use('*', (req, res) => {
     res.json('Hello from recipes router.')
 })
 
-router.get('*', (err, req, res, next) => { //eslint-disable-line
+router.use('*', (err, req, res, next) => { //eslint-disable-line
     res.status(err.status || 500).json({
         customMessage: 'something went wrong inside the recipes router',
         message: err.message,
